@@ -51,10 +51,25 @@ local function homedir()
   end
 end
 
+---@param base_url string
+---@param prefixes string[]
+---@return LinkExpander
+local function xtensa(base_url, prefixes)
+  local re_str = "\\v\\c^(" .. table.concat(prefixes, "|") .. ")_\\w+$"
+  local re = vim.regex(re_str)
+
+  return function(link)
+    if re:match_str(link) then
+      return base_url .. link
+    end
+  end
+end
+
 return {
   regex = regex,
   github = github,
   jira = jira,
   github_issue_or_pr = github_issue_or_pr,
   homedir = homedir,
+  xtensa = xtensa,
 }
